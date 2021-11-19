@@ -3,6 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const MongoClient = require('mongodb').MongoClient;
+const { ObjectId } = require('bson');
 require('dotenv').config();
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.zjpam.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
@@ -23,14 +24,7 @@ app.get('/', (req, res) => {
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
   const toursCollection = client.db("meghbariVacation").collection("tours");
-  
-//   app.post('/addTour', (req, res) => {
-//       const tour = req.body;
-//       toursCollection.insertOne(tour)
-//       .then(result => {
-//           res.send(result.insertedCount > 0)
-//       })
-//   })
+  const serviceCollection = client.db("meghbariVacation").collection("services");
 
   app.post('/addTour', (req, res) => {
     const file = req.files.file;
@@ -77,6 +71,22 @@ client.connect(err => {
         toursCollection.find({})
         .toArray((err, documents) => {
             res.send(documents);
+        })
+    });
+
+    app.get('/popularTours', (req, res) => {
+        toursCollection.find({})
+        .toArray((err, documents) => {
+            res.send(documents);
+        })
+    });
+
+    app.get('/booking/:tourId', (req, res) => {
+        const id = req.params.tourId;
+        const o_id = new ObjectId(id);
+        toursCollection.find({_id: o_id})
+        .toArray((err, documents) => {
+            res.send(documents[0]);
         })
     });
 
