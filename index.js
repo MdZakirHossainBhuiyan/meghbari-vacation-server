@@ -25,6 +25,7 @@ const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology:
 client.connect(err => {
   const toursCollection = client.db("meghbariVacation").collection("tours");
   const serviceCollection = client.db("meghbariVacation").collection("services");
+  const bookedTourCollection = client.db("meghbariVacation").collection("bookedTour");
 
   app.post('/addTour', (req, res) => {
     const file = req.files.file;
@@ -64,6 +65,14 @@ client.connect(err => {
     toursCollection.insertOne({ title, startDate, endDate, seat, tourType, activityLevel, serviceType, tourCategory, breakfast, lunch, dinner, accommodation, transportation, activities, staff, shortDescription, overview, entryFee, ageLimitation, day, night, country, city, place, image })
         .then(result => {
             res.send(result.insertedCount > 0);
+        })
+    })
+
+    app.post('/bookedTour', (req, res) => {
+        const bookedTourInfo = req.body;
+        bookedTourCollection.insertOne(bookedTourInfo)
+        .then(result => {
+            res.send(result.insertedCount>0);
         })
     })
 
