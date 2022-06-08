@@ -90,12 +90,28 @@ client.connect(err => {
         })
     });
 
+    app.get('/searchedTour', (req, res) => {
+        bookedTourCollection.find({})
+        .toArray((err, documents) => {
+            res.send(documents);
+        })
+    });
+
     app.get('/booking/:tourId', (req, res) => {
         const id = req.params.tourId;
         const o_id = new ObjectId(id);
         toursCollection.find({_id: o_id})
         .toArray((err, documents) => {
             res.send(documents[0]);
+        })
+    });
+
+    app.get('/tour/:searchEmail', (req, res) => {
+        const searchKey = req.params.searchEmail;
+        const user_Email = new ObjectId(searchKey);
+        bookedTourCollection.find({clientEmail: user_Email})
+        .toArray((err, documents) => {
+            res.send(documents);
         })
     });
 
