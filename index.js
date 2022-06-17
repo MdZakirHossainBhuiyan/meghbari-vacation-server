@@ -4,6 +4,7 @@ const cors = require('cors');
 const fileUpload = require('express-fileupload');
 const MongoClient = require('mongodb').MongoClient;
 const { ObjectId } = require('bson');
+const ObjectIdC = require('mongodb').ObjectId;
 require('dotenv').config();
 
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.zjpam.mongodb.net/${process.env.DB_NAME}?retryWrites=true&w=majority`;
@@ -106,6 +107,28 @@ client.connect(err => {
         })
     });
 
+    app.put('/update/:id', (req, res) => {
+        const id = req.params.id;
+        const updatedItem = req.body;
+        const filter = {_id: ObjectIdC(id)};
+        const options = {upsert: true}
+        const updateDoc = {
+            $set: {
+                status: 'Accepted'
+            },
+        };
+        const result = bookedTourCollection.updateOne(filter, updateDoc, options);
+        console.log('result', result);
+        res.json(result);
+    })
+
+    app.delete('/delete/:tourId', (req, res) => {
+        const id = req.params.tourId;
+        const query = {_id: ObjectIdC(id)};
+        const result = toursCollection.deleteOne(query);
+        res.json(result);
+    })
+
     app.get('/tour/:searchEmail', (req, res) => {
         const searchKey = req.params.searchEmail;
         const user_Email = new ObjectId(searchKey);
@@ -114,6 +137,8 @@ client.connect(err => {
             res.send(documents);
         })
     });
+
+
 
 });
 
