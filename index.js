@@ -98,6 +98,15 @@ client.connect(err => {
         })
     });
 
+    app.get('/bookedTour/:selectedTourId', (req, res) => {
+        const id = req.params.tourId;
+        const o_id = new ObjectId(id);
+        bookedTourCollection.find({tourId: o_id})
+        .toArray((err, documents) => {
+            res.send(documents[0]);
+        })
+    });
+
     app.get('/booking/:tourId', (req, res) => {
         const id = req.params.tourId;
         const o_id = new ObjectId(id);
