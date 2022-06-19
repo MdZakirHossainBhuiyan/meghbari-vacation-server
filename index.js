@@ -25,7 +25,6 @@ app.get('/', (req, res) => {
 const client = new MongoClient(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 client.connect(err => {
   const toursCollection = client.db("meghbariVacation").collection("tours");
-  const serviceCollection = client.db("meghbariVacation").collection("services");
   const bookedTourCollection = client.db("meghbariVacation").collection("bookedTour");
 
   app.post('/addTour', (req, res) => {
@@ -117,7 +116,6 @@ client.connect(err => {
 
     app.put('/update/:id', (req, res) => {
         const id = req.params.id;
-        const updatedItem = req.body;
         const filter = {_id: ObjectIdC(id)};
         const options = {upsert: true}
         const updateDoc = {
@@ -126,7 +124,6 @@ client.connect(err => {
             },
         };
         const result = bookedTourCollection.updateOne(filter, updateDoc, options);
-        console.log('result', result);
         res.json(result);
     })
 
@@ -145,9 +142,6 @@ client.connect(err => {
             res.send(documents);
         })
     });
-
-
-
 });
 
 app.listen(process.env.PORT || port);
