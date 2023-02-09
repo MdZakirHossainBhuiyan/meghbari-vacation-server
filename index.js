@@ -141,6 +141,8 @@ client.connect(err => {
         .toArray((err, documents) => {
             res.send(documents);
         })
+
+        client.close();
     });
 });
 
